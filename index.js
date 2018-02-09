@@ -5,6 +5,11 @@ var merge = require('lodash.merge');
 var path = require('path');
 var env = argv.env || process.env.NODE_ENV;
 
+function requireModule(pathToModule) {
+  var module = require(pathToModule);
+  return module.__esModule && module.default ? module.default : module;
+}
+
 var envConfigPath, defaultConfigPath, cfgDir, defaultConfig;
 var envConfig = {};
 
@@ -23,14 +28,14 @@ if (env) {
 }
 
 try {
-  defaultConfig = require(defaultConfigPath);
+  defaultConfig = requireModule(defaultConfigPath);
 } catch (err) {
   defaultConfig = {}; // no default specified
 }
 
 try {
   if (envConfigPath) {
-    envConfig = require(envConfigPath);
+    envConfig = requireModule(envConfigPath);
   }
 } catch (err) {
   throw new Error(err);
